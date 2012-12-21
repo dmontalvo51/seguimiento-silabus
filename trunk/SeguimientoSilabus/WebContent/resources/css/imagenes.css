@@ -1,0 +1,12 @@
+@CHARSET "ISO-8859-1";
+
+.ui-icon-verarchivo{
+	height: 40px;
+	margin: 0 0 0 0;
+	padding: 20px 15px 0px 65px;
+	background: url(..resources/img/verarchivo.png) no-repeat left top;
+	letter-spacing: -1px;
+	font-size: 16px;
+	font-weight: normal;
+	color: #FFFFFF;
+}
