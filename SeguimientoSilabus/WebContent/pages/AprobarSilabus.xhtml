@@ -1,0 +1,131 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/common/plantillaPrincipal.xhtml">
+	<ui:define name="title">#{msg.tituloAdminSilabus}</ui:define>
+	<ui:define name="cuerpo">
+		<div class="cuerpo">
+			<!-- Empezar a programar desde aqui -->
+
+			<h:form id="form">
+
+
+				<p:fieldset id="panelDatosCurso" legend="#{msg.lblSilabus}"
+					styleClass="paneles" columns="2">
+					<h:panelGrid columns="2"
+						columnClasses="formColumnaIzquierda,formColumnaDerecha">
+
+						<h:outputLabel for="txtCodigo" value="#{msg.codigo}" />
+						<h:outputText id="txtCodigo"
+							value="#{aprobarSilabus.curso.codigo}" />
+
+						<h:outputLabel for="txtDescripcion" value="#{msg.lblDescripcion}" />
+						<h:outputText id="txtDescripcion"
+							value="#{aprobarSilabus.curso.descripcion}" />
+
+						<h:outputLabel for="txtPlan" value="#{msg.lblPlan}" />
+						<h:outputText id="txtPlan" value="#{aprobarSilabus.curso.plan}" />
+
+						<h:outputLabel for="txtCreditos" value="#{msg.lblCreditos}" />
+						<h:outputText id="txtCreditos"
+							value="#{aprobarSilabus.curso.creditos}" />
+
+						<h:outputLabel for="txtCodigoSilabus"
+							value="#{msg.lblCodigoSilabus}" />
+						<h:outputText id="txtCodigoSilabus"
+							value="#{aprobarSilabus.silabus.codigoSilabus}" />
+
+						<h:outputLabel for="txtFechaSilabus"
+							value="#{msg.lblFechaRegistro}" />
+						<h:outputText id="txtFechaSilabus"
+							value="#{aprobarSilabus.silabus.fecha}" />
+
+						<h:outputLabel for="txtHoraSilabus" value="#{msg.lblHoraRegistro}" />
+						<h:outputText id="txtHoraSilabus"
+							value="#{aprobarSilabus.silabus.hora}" />
+
+						<h:outputLabel value="#{msg.lblVerArchivo}" />
+						<h:panelGroup>
+							<p:commandButton id="descargarArchivo"
+								value="#{msg.lblDescargar}" ajax="false"
+								icon="ui-icon-arrowthichk-d">
+								<p:fileDownload value="#{aprobarSilabus.archivoSilabus}" />
+							</p:commandButton>
+							<p:commandButton id="verArchivo" type="button" onclick="dSilabus.show();"
+								value="#{msg.lblVerArchivo}" />
+						</h:panelGroup>
+					</h:panelGrid>
+				</p:fieldset>
+
+				<p:dataTable id="tablaDetalles" styleClass="tablas" editable="false"
+					value="#{aprobarSilabus.listaDetalleSilabus}" var="detalle">
+
+					<f:facet name="header">
+						<h:outputText value="#{msg.lblListaActividadesSilabus}" />
+					</f:facet>
+
+					<p:column id="columnaNroSemana" headerText="#{msg.lblNroSemana}">
+						<h:outputText value="#{detalle.nroSemana}" />
+					</p:column>
+
+					<p:column id="columnaActividad" headerText="#{msg.lblNroActividad}">
+						<h:outputText value="#{detalle.nroActividad}" />
+					</p:column>
+
+					<p:column id="columnaDetalle" headerText="#{msg.lblDetalle}">
+						<h:outputText value="#{detalle.detalle}" />
+					</p:column>
+
+				</p:dataTable>
+
+
+				<h:panelGrid columns="3" id="panelBotones"
+					style="margin:2em 2em 2em 2em;">
+					<p:commandButton ajax="false" update="growl"
+						value="#{msg.botonAprobar}"
+						action="#{aprobarSilabus.aprobarSilabus}" />
+
+					<p:commandButton ajax="false" update="growl"
+						value="#{msg.botonRechazar}"
+						action="#{aprobarSilabus.rechazarSilabus}" />
+
+					<p:commandButton ajax="false" update="growl"
+						value="#{msg.botonCancelar}" action="#{aprobarSilabus.cancelar}" />
+
+				</h:panelGrid>
+
+
+
+
+				<p:growl id="growl" showDetail="true" sticky="true"
+					redisplay="false" />
+
+
+
+			</h:form>
+
+		</div>
+
+		<p:dialog id="dialogSilabus" widgetVar="dSilabus" onHide="dlSilabus.toggleMaximizable();" onShow="dlSilabus.toggleMaximizable();"
+			header="#{msg.lblSilabus}" modal="true" maximizable="true" >
+			
+			<p:media value="#{aprobarSilabus.silabus.ruta}" width="100%" height="100%">  
+    				Su browser no puede mostrar el archivo pdf, <h:outputLink
+					value="#{aprobarSilabus.silabus.ruta}">click</h:outputLink> para descargar.  
+			</p:media>
+
+<!-- 			<p:media value="#{aprobarSilabus.archivoSilabus}" player="pdf"  width="100%" height="100%">   -->
+<!--     				Su browser no puede mostrar el archivo pdf, <h:outputLink -->
+<!-- 					value="#{aprobarSilabus.silabus.ruta}">click</h:outputLink> para descargar.   -->
+<!-- 			</p:media> -->
+			
+		</p:dialog>
+		<!-- Terminar de programar desde aqui -->
+
+
+
+
+	</ui:define>
+</ui:composition>

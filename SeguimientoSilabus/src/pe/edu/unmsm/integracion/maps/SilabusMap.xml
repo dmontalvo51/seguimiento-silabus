@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pe.edu.unmsm.integracion.dao.SilabusMapper">
+
+
+
+	<select id="cargarSilabus" resultType="pe.edu.unmsm.negocio.modelo.Silabus"
+		parameterType="pe.edu.unmsm.negocio.modelo.Curso">
+		select s.SILAB_CODIGO as codigoSilabus,
+		s.CURSO_CODIGO as codigoCurso,
+		c.CURSO_NOMBRE as curso,
+		s.CURSO_PLAN as plan,
+		es.ES_DESCRIPCION as estado,
+		s.SILAB_RUTA as ruta,
+		s.SILAB_FECHA as fecha,
+		s.SILAB_HORA as hora
+		FROM silabus s INNER JOIN estado_silabus es ON
+		(s.ES_CODIGO=es.ES_CODIGO) INNER JOIN curso c ON (c.CURSO_CODIGO=s.CURSO_CODIGO AND c.CURSO_PLAN=s.CURSO_PLAN)
+		where s.CURSO_CODIGO=#{codigo}
+		and
+		s.CURSO_PLAN=#{plan}
+	</select>
+
+	<select id="listaDetalleSilabus" resultType="pe.edu.unmsm.negocio.modelo.DetalleSilabus"
+		parameterType="java.lang.String">
+		select ds.SILAB_CODIGO as codigoSilabus,
+		ds.DS_SEMANA as nroSemana,
+		ds.DS_ACTIVIDAD as nroActividad,
+		ds.DS_DETALLE as detalle
+		from detalle_silabus ds
+		where ds.SILAB_CODIGO=#{codigoSilabus}
+		ORDER BY nroSemana,nroActividad
+	</select>
+	
+	<update id="aprobarSilabus" parameterType="java.lang.String">
+		update silabus s set s.es_codigo=2 where s.silab_codigo=#{codigoSilabus}
+	</update>
+	
+	<update id="rechazarSilabus" parameterType="java.lang.String">
+		update silabus s set s.es_codigo=3 where s.silab_codigo=#{codigoSilabus}
+	</update>
+
+	<insert id="insertarSilabus" parameterType="pe.edu.unmsm.negocio.modelo.Silabus">
+		insert into silabus
+		VALUES(#{codigoSilabus},#{codigoCurso},#{plan},1,curdate(),curtime(),#{ruta})
+	</insert>
+	
+	<update id="actualizarSilabus" parameterType="pe.edu.unmsm.negocio.modelo.Silabus">
+	
+		UPDATE silabus S set S.CURSO_CODIGO=#{codigoCurso}, S.CURSO_PLAN=#{plan}, S.ES_CODIGO=4, 
+							 S.SILAB_FECHA=curdate(),S.SILAB_HORA=curtime(),S.SILAB_RUTA=#{ruta}
+		WHERE S.SILAB_CODIGO=#{codigoSilabus}
+	</update>
+	
+	<insert id="insertarDetalleSilabus" parameterType="pe.edu.unmsm.negocio.modelo.DetalleSilabus">
+		insert into detalle_silabus
+		VALUES(#{codigoSilabus},#{nroSemana},#{nroActividad},#{detalle})
+	</insert>
+	
+	<delete id="borrarDetalleSilabus" parameterType="java.lang.String">
+		DELETE FROM detalle_silabus
+		WHERE detalle_silabus.SILAB_CODIGO=#{codigoSilabus}
+	</delete>
+	
+	
+	
+
+
+
+</mapper>

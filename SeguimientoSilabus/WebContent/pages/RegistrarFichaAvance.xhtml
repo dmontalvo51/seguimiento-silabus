@@ -1,0 +1,209 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/common/plantillaPrincipal.xhtml">
+	<ui:define name="title">#{msg.tituloSistema}</ui:define>
+	<ui:define name="cuerpo">
+		<div class="cuerpo">
+			<!-- Empezar a programar desde aqui -->
+
+			<p:fieldset legend="#{msg.lblDatosCurso}" styleClass="paneles">
+				<p:tabView id="tabView" styleClass="paneles" value="0">
+					<p:tab id="tabDatosAvance" title="#{msg.lblCurso}">
+						<p:panelGrid>
+							<p:row>
+								<p:column style="font-weight: bold;" colspan="3">
+									<h:outputText value="#{msg.lblDocente}" />
+								</p:column>
+								<p:column colspan="3">
+									<h:outputText value="#{registrarFicha.grupo.nombreDocente}" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column style="font-weight: bold;">
+									<h:outputText value="#{msg.lblCurso}" />
+								</p:column>
+								<p:column colspan="2">
+									<h:outputText value="#{registrarFicha.grupo.nombreCurso}" />
+								</p:column>
+								<p:column style="font-weight: bold;">
+									<h:outputText value="#{msg.codigo}" />
+								</p:column>
+								<p:column colspan="2">
+									<h:outputText value="#{registrarFicha.grupo.codigoCurso}" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column style="font-weight: bold;">
+									<h:outputText value="#{msg.lblPeriodo}" />
+								</p:column>
+								<p:column>
+									<h:outputText
+										value="#{registrarFicha.grupo.anoGrupo} - #{registrarFicha.grupo.cicloGrupo}" />
+								</p:column>
+								<p:column style="font-weight: bold;">
+									<h:outputText value="#{msg.lblAula}" />
+								</p:column>
+								<p:column>
+									<h:outputText value="#{registrarFicha.grupo.aula}" />
+								</p:column>
+								<p:column style="font-weight: bold;">
+									<h:outputText value="#{msg.lblGrupo}" />
+								</p:column>
+								<p:column>
+									<h:outputText value="#{registrarFicha.grupo.codigoGrupo}" />
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:tab>
+					<p:tab id="tabSilabus" title="#{msg.lblSilabus}">
+						<p:media value="#{registrarFicha.rutaArchivoSilabus}" width="100%"
+							height="100%">  
+		    				El browser no puede mostrar el archivo pdf, <h:outputLink
+								value="#{registrarFicha.rutaArchivoSilabus}">click</h:outputLink> para descargarlo.  
+					</p:media>
+					</p:tab>
+				</p:tabView>
+			</p:fieldset>
+
+			<p:fieldset legend="#{msg.lblAvance}" styleClass="paneles">
+
+				<h:form id="formLlenarFicha">
+
+					<p:panelGrid styleClass="tablas">
+
+						<p:row>
+							<p:column>
+								<h:outputText value="#{msg.lblFecha}" />
+							</p:column>
+							<p:column>
+								<p:calendar locale="es" id="fechaRegistroAvance"
+									pattern="dd-MM-yyyy"
+									value="#{registrarFicha.fecha}" />
+							</p:column>
+
+							<p:column>
+								<h:outputText value="#{msg.lblNroSemana}" />
+							</p:column>
+							<p:column>
+								<p:selectOneMenu id="listaSemanas"
+									valueChangeListener="#{registrarFicha.seleccionaSemana}"
+									value="#{registrarFicha.avance.nroSemana}">
+									<f:selectItem itemLabel="Seleccione una semana" itemValue="" />
+									<f:selectItems value="#{registrarFicha.listaSemanas}" />
+									<p:ajax update="listaActividades" event="change"
+										listener="#{registrarFicha.seleccionaSemana}" />
+								</p:selectOneMenu>
+							</p:column>
+
+							<p:column>
+								<h:outputText value="#{msg.lblNroActividad}" />
+							</p:column>
+							<p:column>
+								<p:selectOneMenu id="listaActividades"
+									value="#{registrarFicha.avance.nroActividad}">
+									<f:selectItem itemLabel="Seleccione una actividad" itemValue="" />
+									<f:selectItems value="#{registrarFicha.listaActividades}"
+										var="detalle" itemValue="#{detalle.nroActividad}"
+										itemLabel="#{detalle.nroActividad} - #{detalle.detalle}" />
+									<p:ajax update="txtDetalle" event="change"
+										listener="#{registrarFicha.seleccionaActividad}" />
+								</p:selectOneMenu>
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText value="#{msg.lblDetalle}" />
+							</p:column>
+							<p:column colspan="5">
+								<h:outputText id="txtDetalle"
+									value="#{registrarFicha.avance.detalleActividad}" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText for="txtObservaciones"
+									value="#{msg.lblObservaciones}" />
+							</p:column>
+							<p:column colspan="2">
+								<p:inputTextarea id="txtObservaciones"
+									value="#{registrarFicha.avance.observaciones}" cols="60" />
+							</p:column>
+							<p:column>
+								<h:outputText for="txtTarea" value="#{msg.lblTarea}" />
+							</p:column>
+							<p:column colspan="2">
+								<p:inputTextarea id="txtTarea"
+									value="#{registrarFicha.avance.tarea}" cols="60" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+
+					<h:panelGrid columns="2">
+						<p:commandButton value="#{msg.botonAgregar}" ajax="true"
+							actionListener="#{registrarFicha.agregarAvance}"
+							update="tablaAvances" />
+
+					</h:panelGrid>
+
+					<p:dataTable id="tablaAvances"
+						value="#{registrarFicha.listaAvances}" var="lineaAvance">
+
+						<p:column style="width:10%"  headerText="#{msg.lblFecha}">
+							<h:outputText value="#{lineaAvance.fechaRegistrada}"></h:outputText>
+						</p:column>
+
+						<p:column style="width:5%" headerText="#{msg.lblNroSemana}">
+							<h:outputText value="#{lineaAvance.nroSemana}"></h:outputText>
+						</p:column>
+
+						<p:column style="width:5%" headerText="#{msg.lblNroActividad}">
+							<h:outputText value="#{lineaAvance.nroActividad}"></h:outputText>
+						</p:column>
+
+						<p:column style="width:20%" headerText="#{msg.lblDetalle}">
+							<h:outputText value="#{lineaAvance.detalleActividad}"></h:outputText>
+						</p:column>
+
+						<p:column style="width:20%" headerText="#{msg.lblObservaciones}">
+							<h:outputText value="#{lineaAvance.observaciones}"></h:outputText>
+						</p:column>
+
+						<p:column style="width:20%" headerText="#{msg.lblTarea}">
+							<h:outputText value="#{lineaAvance.tarea}"></h:outputText>
+						</p:column>
+
+						<p:column style="width:5%">
+							<p:commandButton id="eliminarFila" update="tablaAvances" ajax="true"
+								icon="ui-icon-closethick" title="#{msg.lblEliminar}" actionListener="#{registrarFicha.eliminarAvance}">
+								<f:setPropertyActionListener value="#{lineaAvance}" 
+									target="#{registrarFicha.avanceSeleccionado}"  />
+							</p:commandButton>
+						</p:column>
+
+
+					</p:dataTable>
+	
+
+					<h:panelGrid columns="2">
+						<p:commandButton value="#{msg.botonGuardar}" ajax="false"
+							action="#{registrarFicha.guardarFichaAvance}"
+							update="growl" />
+
+					</h:panelGrid>
+
+				</h:form>
+
+
+			</p:fieldset>
+			<!-- Terminar de programar desde aqui -->
+		</div>
+
+		<p:growl id="growl" showDetail="true" sticky="false" redisplay="false" life="5000" />
+
+	</ui:define>
+</ui:composition>
